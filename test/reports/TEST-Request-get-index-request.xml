@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Request::get-index.request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="3" assertions="4" time="0.002109999768435955">
+    <testcase name="test_0001_parses the http method" lineno="11" classname="Request::get-index.request" assertions="1" time="0.000856699887663126" file="spec/http_parser_spec.rb">
+    </testcase>
+    <testcase name="test_0002_parses the resource" lineno="15" classname="Request::get-index.request" assertions="1" time="0.000552099896594882" file="spec/http_parser_spec.rb">
+    </testcase>
+    <testcase name="test_0003_parses the headers" lineno="18" classname="Request::get-index.request" assertions="2" time="0.000701199984177947" file="spec/http_parser_spec.rb">
+    </testcase>
+  </testsuite>
+</testsuites>
