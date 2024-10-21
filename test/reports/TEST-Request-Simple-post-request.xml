@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Request::Simple post-request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="5" assertions="8" time="0.0016463999636471272">
+    <testcase name="test_0003_parses the version" lineno="81" classname="Request::Simple post-request" assertions="1" time="0.0004414999857544899" file="spec/http_parser_spec.rb">
+    </testcase>
+    <testcase name="test_0001_parses the http method" lineno="71" classname="Request::Simple post-request" assertions="1" time="0.00025049992837011814" file="spec/http_parser_spec.rb">
+    </testcase>
+    <testcase name="test_0005_parses the params" lineno="93" classname="Request::Simple post-request" assertions="2" time="0.000394199974834919" file="spec/http_parser_spec.rb">
+    </testcase>
+    <testcase name="test_0004_parses the headers" lineno="86" classname="Request::Simple post-request" assertions="3" time="0.00022489996626973152" file="spec/http_parser_spec.rb">
+    </testcase>
+    <testcase name="test_0002_parses the resource" lineno="76" classname="Request::Simple post-request" assertions="1" time="0.0003353001084178686" file="spec/http_parser_spec.rb">
+    </testcase>
+  </testsuite>
+</testsuites>

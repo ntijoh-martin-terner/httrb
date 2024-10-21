@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="Request::Simple get-request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="3" assertions="4" time="0.008594600250944495">
+    <testcase name="test_0001_parses the http method" lineno="8" classname="Request::Simple get-request" assertions="1" time="0.007905100006610155" file="spec/http_parser_spec.rb">
+    </testcase>
+    <testcase name="test_0002_parses the resource" lineno="13" classname="Request::Simple get-request" assertions="1" time="0.00041680014692246914" file="spec/http_parser_spec.rb">
+    </testcase>
+    <testcase name="test_0003_parses the headers" lineno="17" classname="Request::Simple get-request" assertions="2" time="0.00027270009741187096" file="spec/http_parser_spec.rb">
+    </testcase>
+  </testsuite>
+</testsuites>

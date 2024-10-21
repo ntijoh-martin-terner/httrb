@@ -7,4 +7,4 @@ Minitest::TestTask.create(:test) do |t|
   t.test_globs = ["spec/**/*_spec.rb"]
 end
 
-task :default => :test
+task :test
