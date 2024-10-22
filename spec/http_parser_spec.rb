@@ -1,8 +1,7 @@
 require_relative 'spec_helper'
 require_relative '../lib/request'
 
-describe 'Request' do
-
+describe 'request' do
     describe 'get-index.request' do
         before do
             @request = Request.new(File.read('./spec/example_requests/get-index.request.txt'))
@@ -95,4 +94,8 @@ describe 'Request' do
             _(@request.params["password"]).must_equal "verys3cret!"
         end
     end
+end
+
+describe "http_server" do 
+  
 end

@@ -12,7 +12,7 @@ class Request
 
     @params = {}
     
-    if !head_and_body[1].empty?
+    if !head_and_body[1].to_s.empty?
       @params = head_and_body[1].split("&").map { |param| param_name, param_value = param.split("="); [param_name, param_value] }.to_h()
     elsif resource_params
       @params = resource_params.split("&").map { |param| param_name, param_value = param.split("="); [param_name, param_value] }.to_h()
