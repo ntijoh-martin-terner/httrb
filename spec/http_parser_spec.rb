@@ -95,7 +95,3 @@ describe 'request' do
         end
     end
 end
-
-describe "http_server" do 
-  
-end

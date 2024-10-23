@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="serve" filepath="spec/http_server_spec.rb" skipped="0" failures="0" errors="0" tests="1" assertions="2" time="0.047521800006506965">
+    <testcase name="test_0001_adding route works" lineno="15" classname="serve" assertions="2" time="0.047521800006506965" file="spec/http_server_spec.rb">
+    </testcase>
+  </testsuite>
+</testsuites>

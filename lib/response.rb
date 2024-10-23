@@ -8,6 +8,7 @@ class Response
     @response = ""
     @response += "HTTP/1.1 #{status}\r\n"
     @response += "Content-Type: #{content_type}\r\n"
+    @response += "Content-Length: #{content.bytesize}\r\n"  # Include content length for proper serving
     @response += "\r\n"
     @response += content
   end
@@ -22,6 +23,8 @@ class Response
                      "image/jpeg"
                    when '.gif'
                      "image/gif"
+                   when '.pdf'
+                    "application/pdf"
                    when '.html'
                      "text/html"
                    when '.txt'
@@ -30,7 +33,10 @@ class Response
                      "application/octet-stream"  # Default for unknown file types
                    end
 
-    file_mode = content_type.start_with?("image/") ? "rb" : "r"
+    # file_mode = content_type.start_with?("image/") ? "rb" : "r"
+
+    # Use binary mode for non-text files, like PDFs and images
+    file_mode = content_type.start_with?("text/") ? "r" : "rb"
 
     # Open and read the file content
     begin  
