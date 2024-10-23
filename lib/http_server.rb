@@ -13,16 +13,11 @@ class HTTPServer
     def start
         server = TCPServer.new(@port)
         puts "Listening on #{@port}"
-        #router.add_route...
-        
-        def fun()
-                    
-            html = "<h1>Hello, World!</h1>"
-            return html
-        end
 
         @router.add_route("/") { "<h1>Hello, World!</h1>" }
-        @router.add_content_route("/content/", "../content/")
+        @router.add_route("/thing/") { "<h1>Thing!</h1>" }
+        @router.add_content_route("/content/", ["../content/*/**"])
+        @router.add_content_route("/requests/", ["../spec/example_requests/", "../content/"])
 
         while session = server.accept
             data = ""

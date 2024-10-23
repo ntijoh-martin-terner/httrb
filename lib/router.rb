@@ -6,22 +6,34 @@ class Router
       @routes = {}
     end
 
-    def add_content_route(path_alias, path) #route that will serve content, if not recursive then it will serve either the filename provided only or file.extension with that route exactly
+    def add_content_route(path_alias, paths) #route that will serve content, if not recursive then it will serve either the filename provided only or file.extension with that route exactly
       #check if it exists
-      current_file_dir = File.expand_path(File.dirname(__FILE__))
+      
+      patterns = {}
 
-      # Join the current file directory with the relative path
-      absolute_path = File.expand_path(path, current_file_dir)
+      paths.each do | path | 
+        current_file_dir = File.expand_path(File.dirname(__FILE__))
+  
+        # Join the current file directory with the relative path
+        absolute_path = File.expand_path(path, current_file_dir)
+  
+        # relative_base_path = Pathname.new(path).dirname.to_s + Pathname::SEPARATOR_LIST
+        relative_base_path = path.sub(/\*.*$/, '') + Pathname::SEPARATOR_LIST # remove glob patterns from path
+  
+        absolute_base_path = File.realpath(File.expand_path(relative_base_path, current_file_dir))
+  
+        expanded_patterns = Dir[File.directory?(absolute_path) ? File.join(absolute_path, '**', '*') : absolute_path]
+  
+        patterns[absolute_base_path] = expanded_patterns
+      end
+      if @routes.key? path_alias
+        # @routes[path_alias]
+        raise Exception.new "Route alias already exists"
+        return
+      end       
 
-      relative_base_path = Pathname.new(path).dirname.to_s + Pathname::SEPARATOR_LIST
 
-      absolute_base_path = File.realpath(File.expand_path(relative_base_path, current_file_dir))
-
-      expanded_patterns = Dir[File.directory?(absolute_path) ? File.join(absolute_path, '**', '*') : absolute_path]
-
-      # expanded_patterns.map { |path| File.expand_path(path, absolute_base_path) }
-
-      @routes[path_alias] = {:content => true, :basePath => absolute_base_path, :expanded_paths => expanded_patterns, :action => nil}
+      @routes[path_alias] = {:content => true, :patterns => patterns, :action => nil}
     end
 
     def add_route(path_alias, &action)
@@ -48,17 +60,25 @@ class Router
           next
         end
 
-        base_path = route[:basePath]
+        patterns = route[:patterns]
+        # base_path = route[:basePath]
 
-        expanded_request_path = File.join(base_path, request_path)
-
-        route[:expanded_paths].each do | expanded_path |
-          if expanded_request_path != expanded_path
+        patterns.each do | base_path, expanded_paths |
+          relative_request_path = request_path.split(route_path)[1]
+  
+          if relative_request_path.nil?
             next
           end
-
-          return Response.fromFile(expanded_request_path)
+  
+          expanded_request_path = File.join(base_path, relative_request_path)
+  
+          if !expanded_paths.include? expanded_request_path
+            next
+          end
+  
+          return Response.fromFile(expanded_request_path)          
         end
+
       end
 
       return Response.new(404,"404 Not Found","text/html")
