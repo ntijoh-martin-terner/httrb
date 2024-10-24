@@ -1,3 +1,5 @@
+require 'mime/types'
+
 class Response
   attr_reader :status, :content, :content_type, :response
   
@@ -13,27 +15,10 @@ class Response
     @response += content
   end
 
-  def self.fromFile(path)
+  def self.fromFile(path, status=200)
     extension = File.extname(path)
 
-    content_type = case extension
-                   when '.png'
-                     "image/png"
-                   when '.jpg', '.jpeg'
-                     "image/jpeg"
-                   when '.gif'
-                     "image/gif"
-                   when '.pdf'
-                    "application/pdf"
-                   when '.html'
-                     "text/html"
-                   when '.txt'
-                     "text/html"
-                   else
-                     "application/octet-stream"  # Default for unknown file types
-                   end
-
-    # file_mode = content_type.start_with?("image/") ? "rb" : "r"
+    content_type = MIME::Types.of(File.basename(path)).first.to_s
 
     # Use binary mode for non-text files, like PDFs and images
     file_mode = content_type.start_with?("text/") ? "r" : "rb"
@@ -51,6 +36,6 @@ class Response
       file_content.gsub!(/\r?\n/, "\r\n")
     end
 
-    return Response.new(200, file_content, content_type)
+    return Response.new(status, file_content, content_type)
   end
 end

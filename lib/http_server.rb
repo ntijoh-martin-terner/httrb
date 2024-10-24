@@ -5,21 +5,18 @@ require 'socket'
 
 class HTTPServer
     attr_reader :router, :port, :server
+    attr_accessor :intercept_response
     def initialize(port)
         @port = port
         @server = nil
         @router = Router.new
         @thread = nil
+        @intercept_response = -> (response, _) { response }
     end
 
     def start
         @server = TCPServer.new(@port)
         puts "Listening on #{@port}"
-
-        # @router.add_route("/") { "<h1>Hello, World!</h1>" }
-        # @router.add_route("/thing/") { "<h1>Thing!</h1>" }
-        # @router.add_content_route("/content/", ["../content/"])
-        # @router.add_content_route("/requests/", ["../spec/example_requests/", "../content/"])
 
         @thread = Thread.new do
             while session = @server.accept
@@ -31,20 +28,13 @@ class HTTPServer
                 request = Request.new(data)
 
                 response = @router.match_route(request)
+
+                response = @intercept_response.call(response, request)
                 
                 session.print response.response
                 session.close
             end
         end
-
-        # trap("INT") do
-        #     p "stopping"
-        #     @thread.kill if @thread  # Kill the server thread
-        #     @server.close if @server  # Close the TCPServer instance if it exists
-        #     exit
-        # end
-
-        # sleep
     end
 
     def stop
