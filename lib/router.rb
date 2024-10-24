@@ -8,11 +8,11 @@ class Router
 
     def add_content_route(path_alias, paths) #route that will serve content, if not recursive then it will serve either the filename provided only or file.extension with that route exactly
       #check if it exists
-      
       patterns = {}
+      
+      current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
 
       paths.each do | path | 
-        current_file_dir = File.expand_path(File.dirname(__FILE__))
   
         # Join the current file directory with the relative path
         absolute_path = File.expand_path(path, current_file_dir)
