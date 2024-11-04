@@ -10,38 +10,31 @@ class Request
 
     @method, @resource, @version = request_line.split(' ')
 
-    @headers = parse_headers(headers)
+    @headers = Request.parse_headers(headers)
 
-    @params = parse_params(body, request_line)
+    @params = Request.parse_params(body, request_line)
   end
 
-  def parse_headers(headers)
+  def self.parse_headers(headers)
     headers.split("\n").map do |header|
       header_name, header_value = header.split(': ', 2)
       [header_name, header_value]
     end.to_h
   end
 
-  def parse_params(body, request_line)
+  def self.parse_params(body, request_line)
     resource = request_line.split(' ')[1]
     resource_params = resource.split('?')[1]
 
     if !body.to_s.empty?
-      parse_head_params(body)
+      Request.parse_raw_params(body)
     elsif resource_params
-      parse_resource_params(resource_params)
+      Request.parse_raw_params(resource_params)
     end
   end
 
-  def parse_resource_params(resource_params)
-    resource_params.split('&').map do |param|
-      param_name, param_value = param.split('=')
-      [param_name, param_value]
-    end.to_h
-  end
-
-  def parse_head_params(head)
-    head.split('&').map do |param|
+  def self.parse_raw_params(param_string)
+    param_string.split('&').map do |param|
       param_name, param_value = param.split('=')
       [param_name, param_value]
     end.to_h

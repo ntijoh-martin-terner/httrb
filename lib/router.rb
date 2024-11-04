@@ -36,7 +36,6 @@ class Router
       # Join the current file directory with the relative path
       absolute_path = File.expand_path(path, current_file_dir)
 
-      # relative_base_path = Pathname.new(path).dirname.to_s + Pathname::SEPARATOR_LIST
       relative_base_path = path.sub(/\*.*$/, '') + Pathname::SEPARATOR_LIST # remove glob patterns from path
 
       absolute_base_path = File.realpath(File.expand_path(relative_base_path, current_file_dir))
@@ -60,10 +59,13 @@ class Router
     return unless @routes.key?(request_path)
 
     static_route = @routes[request_path]
-    if static_route[:type] == :route
+
+    static_route_type = static_route[:type]
+
+    if static_route_type == :route
       # Call the action for this route and return its result
-      @routes[request_path][:action].call
-    elsif static_route[:type] == :file
+      static_route[:action].call
+    elsif static_route_type == :file
       Response.from_file(static_route[:file_path])
     end
   end
@@ -73,7 +75,6 @@ class Router
       next if route[:type] != :directory
 
       patterns = route[:patterns]
-      # base_path = route[:basePath]
 
       patterns.each do |base_path, expanded_paths|
         relative_request_path = request_path.split(route_path)[1]
