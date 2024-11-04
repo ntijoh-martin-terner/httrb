@@ -1,0 +1,2 @@
+paths: # Files to analyse. Churn calculation is scoped to these files when using Git SCM.
+  - "./lib/"
