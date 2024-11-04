@@ -26,7 +26,7 @@ class Router
 
     raise StandardError, 'Route alias already exists' if @routes.key? path_alias
 
-    @routes[path_alias] = { type: :directory, patterns: patterns, action: nil }
+    @routes[path_alias] = { type: :directory, patterns:, action: nil }
   end
 
   def expand_directory_glob_patterns(paths, current_file_dir)
@@ -53,7 +53,7 @@ class Router
 
   def add_route(path_alias, &action)
     # check if it exists
-    @routes[path_alias] = { type: :route, action: action }
+    @routes[path_alias] = { type: :route, action: }
   end
 
   def match_static_route(request_path)

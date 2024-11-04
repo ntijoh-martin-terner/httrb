@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="serve" filepath="spec/http_server_spec.rb" skipped="0" failures="0" errors="0" tests="5" assertions="9" time="0.2699975999998969">
-    <testcase name="test_0003_serves static gif files" lineno="42" classname="serve" assertions="2" time="0.05580329999997957" file="spec/http_server_spec.rb">
+  <testsuite name="serve" filepath="spec/http_server_spec.rb" skipped="0" failures="0" errors="0" tests="5" assertions="9" time="0.2647827999899164">
+    <testcase name="test_0004_serves static html files" lineno="59" classname="serve" assertions="2" time="0.048819800023920834" file="spec/http_server_spec.rb">
     </testcase>
-    <testcase name="test_0002_serves static txt files" lineno="27" classname="serve" assertions="2" time="0.046062500000061846" file="spec/http_server_spec.rb">
+    <testcase name="test_0005_returns 404 for nonexistent file" lineno="76" classname="serve" assertions="1" time="0.04732250003144145" file="spec/http_server_spec.rb">
     </testcase>
-    <testcase name="test_0001_adding route works" lineno="15" classname="serve" assertions="2" time="0.045947699999942415" file="spec/http_server_spec.rb">
+    <testcase name="test_0001_adding route works" lineno="17" classname="serve" assertions="2" time="0.03133029997115955" file="spec/http_server_spec.rb">
     </testcase>
-    <testcase name="test_0005_returns 404 for nonexistent file" lineno="74" classname="serve" assertions="1" time="0.06157729999995354" file="spec/http_server_spec.rb">
+    <testcase name="test_0003_serves static gif files" lineno="44" classname="serve" assertions="2" time="0.05061869998462498" file="spec/http_server_spec.rb">
     </testcase>
-    <testcase name="test_0004_serves static html files" lineno="57" classname="serve" assertions="2" time="0.06060679999995955" file="spec/http_server_spec.rb">
+    <testcase name="test_0002_serves static txt files" lineno="29" classname="serve" assertions="2" time="0.08669149997876957" file="spec/http_server_spec.rb">
     </testcase>
   </testsuite>
 </testsuites>

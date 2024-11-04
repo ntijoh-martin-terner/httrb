@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'mime/types'
+
+# Response
 class Response
   attr_reader :status, :headers, :body
 
@@ -18,18 +20,6 @@ class Response
     response += body
     response
   end
-
-  # Method to handle GET requests, with the ability to serve static files or other content
-  # def self.get(content, content_type="text/html", status=200)
-  #   headers = { "Content-Type" => content_type }
-  #   new(status, headers, content)
-  # end
-
-  # # Method to handle POST responses, assuming no content is returned
-  # def self.post(status=201)
-  #   headers = { "Content-Type" => "application/json" }  # Example for JSON responses
-  #   new(status, headers, "")
-  # end
 
   # Method to handle redirects for any HTTP method
   def self.redirect(location, status = 302)

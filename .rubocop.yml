@@ -1,2 +1,4 @@
 Metrics/MethodLength:
   Max: 100
+AllCops:
+  TargetRubyVersion: 3.2.3
