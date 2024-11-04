@@ -10,3 +10,5 @@ gem 'minitest-reporters', '~> 1.7'
 gem 'mime-types'
 
 gem 'rubocop', require: false
+
+gem 'rubycritic', require: false
