@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="request::post-login.request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="5" assertions="8" time="0.004433800000697374">
-    <testcase name="test_0004_parses the headers" lineno="85" classname="request::post-login.request" assertions="3" time="0.0007732999802101403" file="spec/http_parser_spec.rb">
+  <testsuite name="request::post-login.request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="5" assertions="8" time="0.0009615999997549807">
+    <testcase name="test_0003_parses the version" lineno="81" classname="request::post-login.request" assertions="1" time="0.00030270000002019515" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0002_parses the resource" lineno="77" classname="request::post-login.request" assertions="1" time="0.0007183999987319112" file="spec/http_parser_spec.rb">
+    <testcase name="test_0002_parses the resource" lineno="77" classname="request::post-login.request" assertions="1" time="0.00018199999999524152" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0003_parses the version" lineno="81" classname="request::post-login.request" assertions="1" time="0.0010667000024113804" file="spec/http_parser_spec.rb">
+    <testcase name="test_0001_parses the http method" lineno="73" classname="request::post-login.request" assertions="1" time="0.0001408000000537868" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0001_parses the http method" lineno="73" classname="request::post-login.request" assertions="1" time="0.0010689000191632658" file="spec/http_parser_spec.rb">
+    <testcase name="test_0005_parses the params" lineno="91" classname="request::post-login.request" assertions="2" time="0.0002144999998563435" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0005_parses the params" lineno="91" classname="request::post-login.request" assertions="2" time="0.0008065000001806766" file="spec/http_parser_spec.rb">
+    <testcase name="test_0004_parses the headers" lineno="85" classname="request::post-login.request" assertions="3" time="0.00012159999982941372" file="spec/http_parser_spec.rb">
     </testcase>
   </testsuite>
 </testsuites>

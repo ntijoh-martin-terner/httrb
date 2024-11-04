@@ -6,7 +6,19 @@ class Router
       @routes = {}
     end
 
-    def add_content_route(path_alias, paths) #route that will serve content, if not recursive then it will serve either the filename provided only or file.extension with that route exactly
+    def add_file_route(path_alias, path)
+      current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
+
+      absolute_base_path = File.realpath(File.expand_path(path, current_file_dir))
+
+      if File.directory?(absolute_base_path)
+        raise Exception.new "File router cannot serve directory"
+      end
+
+      @routes[path_alias] = {:type => :file, :file_path => absolute_base_path, :action => nil}
+    end
+
+    def add_directory_route(path_alias, paths) #route that will serve content, if not recursive then it will serve either the filename provided only or file.extension with that route exactly
       #check if it exists
       patterns = {}
       
@@ -21,6 +33,10 @@ class Router
         relative_base_path = path.sub(/\*.*$/, '') + Pathname::SEPARATOR_LIST # remove glob patterns from path
   
         absolute_base_path = File.realpath(File.expand_path(relative_base_path, current_file_dir))
+
+        if File.file?(absolute_base_path)
+          raise Exception.new "Directory router cannot serve file"
+        end
   
         expanded_patterns = Dir[File.directory?(absolute_path) ? File.join(absolute_path, '**', '*') : absolute_path]
   
@@ -33,12 +49,12 @@ class Router
       end       
 
 
-      @routes[path_alias] = {:content => true, :patterns => patterns, :action => nil}
+      @routes[path_alias] = {:type => :directory, :patterns => patterns, :action => nil}
     end
 
     def add_route(path_alias, &action)
       #check if it exists
-      @routes[path_alias] = {:content => false, :action => action}
+      @routes[path_alias] = {:type => :route, :action => action}
     end
 
     def match_route(request)
@@ -47,16 +63,16 @@ class Router
 
       if @routes.key?(request_path)
         route = @routes[request_path]
-        if route[:content] == false
+        if route[:type] == :route
           # Call the action for this route and return its result
-          return Response.new(200, @routes[request_path][:action].call, "text/html")
-        else
-          return Response.fromFile(route[:basePath])
+          return @routes[request_path][:action].call
+        elsif route[:type] == :file
+          return Response.from_file(route[:file_path])
         end
       end
 
       @routes.each do |route_path, route|
-        if route[:content] == false 
+        if route[:type] != :directory 
           next
         end
 
@@ -76,11 +92,11 @@ class Router
             next
           end
   
-          return Response.fromFile(expanded_request_path)          
+          return Response.from_file(expanded_request_path)          
         end
 
       end
 
-      return Response.new(404,"404 Not Found","text/html")
+      Response.not_found
     end
 end

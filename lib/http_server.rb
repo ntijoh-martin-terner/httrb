@@ -31,7 +31,7 @@ class HTTPServer
 
                 response = @intercept_response.call(response, request)
                 
-                session.print response.response
+                session.print response.to_s
                 session.close
             end
         end

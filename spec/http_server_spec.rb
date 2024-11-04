@@ -13,7 +13,7 @@ describe 'serve' do
   end
 
   it 'adding route works' do
-    @server.router.add_route("/thing/") { "<h1>Thing!</h1>" }
+    @server.router.add_route("/thing/") { Response.new(200, { "Content-Type" => "text/html" }, "<h1>Thing!</h1>") }
     @server.start()
 
     uri = URI('http://localhost:4567/thing/')
@@ -25,7 +25,7 @@ describe 'serve' do
     assert_equal "<h1>Thing!</h1>", response.body  # Body should match the content
   end
   it 'serves static txt files' do
-    @server.router.add_content_route("/content/", ["./example_content/"])
+    @server.router.add_directory_route("/content/", ["./example_content/"])
     @server.start()
 
     uri = URI('http://localhost:4567/content/test.txt')
@@ -40,7 +40,7 @@ describe 'serve' do
     assert_equal file_content, response.body  # Body should match the content
   end
   it 'serves static gif files' do
-    @server.router.add_content_route("/content/", ["./example_content/"])
+    @server.router.add_directory_route("/content/", ["./example_content/"])
     @server.start()
 
     uri = URI('http://localhost:4567/content/frog.gif')
@@ -55,7 +55,7 @@ describe 'serve' do
     assert_equal file_content, response.body  # Status code should be 200
   end
   it 'serves static html files' do
-    @server.router.add_content_route("/content/", ["./example_content/"])
+    @server.router.add_directory_route("/content/", ["./example_content/"])
     @server.start()
 
     uri = URI('http://localhost:4567/content/stuff/test.html')
@@ -65,14 +65,14 @@ describe 'serve' do
     file = File.open("./spec/example_content/stuff/test.html", "r")
     file_content = file.read
 
-    file_content.gsub!(/\r?\n/, "\r\n")
+    # file_content.gsub!(/\r?\n/, "\r\n")
 
     # Check if the content is what we expect
     assert_equal "200", response.code  # Status code should be 200
     assert_equal file_content, response.body  # Status code should be 200
   end
   it 'returns 404 for nonexistent file' do
-    @server.router.add_content_route("/content/", ["./example_content/"])
+    @server.router.add_directory_route("/content/", ["./example_content/"])
     @server.start()
 
     uri = URI('http://localhost:4567/content/nonexistent.txt')
