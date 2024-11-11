@@ -6,27 +6,28 @@ require 'pathname'
 # Router
 class Router
   def initialize
-    @routes = {}
+    # @routes = {}
+    @routes = Hash.new { |hash, key| hash[key] = {} }
   end
 
-  def add_file_route(path_alias, path)
+  def add_file_route(path_alias, method, path)
     current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
 
     absolute_base_path = File.realpath(File.expand_path(path, current_file_dir))
 
     raise StandardError, 'File router cannot serve directory' if File.directory?(absolute_base_path)
 
-    @routes[path_alias] = { type: :file, file_path: absolute_base_path, action: nil }
+    @routes[path_alias][method] = { type: :file, file_path: absolute_base_path, action: nil }
   end
 
-  def add_directory_route(path_alias, paths)
+  def add_directory_route(path_alias, method, paths)
     current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
 
     patterns = expand_directory_glob_patterns(paths, current_file_dir)
 
     raise StandardError, 'Route alias already exists' if @routes.key? path_alias
 
-    @routes[path_alias] = { type: :directory, patterns:, action: nil }
+    @routes[path_alias][method] = { type: :directory, patterns:, action: nil }
   end
 
   def expand_directory_glob_patterns(paths, current_file_dir)
@@ -50,15 +51,20 @@ class Router
     patterns
   end
 
-  def add_route(path_alias, &action)
+  def add_route(path_alias, method, &action)
     # check if it exists
-    @routes[path_alias] = { type: :route, action: }
+    @routes[path_alias][method] = { type: :route, action: }
+    # @routes[path_alias] = { type: :route, action: }
   end
 
-  def match_static_route(request_path)
-    return unless @routes.key?(request_path)
+  def match_static_route(request_path, request_method)
+    static_route = @routes[request_path][request_method]
 
-    static_route = @routes[request_path]
+    return unless static_route
+
+    # return unless @routes.key?(request_path)
+
+    # static_route = @routes[request_path][request_method]
 
     static_route_type = static_route[:type]
 
@@ -95,8 +101,14 @@ class Router
   def match_route(request)
     # Extract the path from the request
     request_path = request.resource
+    request_method = request.method
 
-    return match_static_route(request_path) if @routes.key?(request_path)
+    if @routes[request_path] && @routes[request_path][request_method]
+      return match_static_route(request_path,
+                                request_method)
+    end
+
+    # @routes.key?(request_path)
 
     match_dynamic_route(request_path)
   end

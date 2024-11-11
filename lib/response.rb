@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'mime/types'
+require 'json'
 
 # Response
 class Response
