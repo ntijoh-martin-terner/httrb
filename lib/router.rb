@@ -3,85 +3,89 @@
 require_relative 'response'
 require 'pathname'
 
-# Router
-class Router
-  def initialize
-    # @routes = {}
-    @routes = Hash.new { |hash, key| hash[key] = {} }
-  end
-
-  def add_file_route(path_alias, method, path)
-    current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
-
-    absolute_base_path = File.realpath(File.expand_path(path, current_file_dir))
-
-    raise StandardError, 'File router cannot serve directory' if File.directory?(absolute_base_path)
-
-    @routes[path_alias][method] = { type: :file, file_path: absolute_base_path, action: nil }
-  end
-
-  def add_directory_route(path_alias, method, paths)
-    current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
-
-    patterns = expand_directory_glob_patterns(paths, current_file_dir)
-
-    raise StandardError, 'Route alias already exists' if @routes.key? path_alias
-
-    @routes[path_alias][method] = { type: :directory, patterns:, action: nil }
-  end
-
-  def expand_directory_glob_patterns(paths, current_file_dir)
-    patterns = {}
-
-    paths.each do |path|
-      # Join the current file directory with the relative path
-      absolute_path = File.expand_path(path, current_file_dir)
-
-      relative_base_path = path.sub(/\*.*$/, '') + Pathname::SEPARATOR_LIST # remove glob patterns from path
-
-      absolute_base_path = File.realpath(File.expand_path(relative_base_path, current_file_dir))
-
-      raise StandardError, 'Directory router cannot serve file' if File.file?(absolute_base_path)
-
-      expanded_patterns = Dir[File.directory?(absolute_path) ? File.join(absolute_path, '**', '*') : absolute_path]
-
-      patterns[absolute_base_path] = expanded_patterns
+# Httrb
+module Httrb
+  # Router
+  class Router
+    def initialize
+      # @routes = {}
+      @routes = Hash.new { |hash, key| hash[key] = {} }
     end
 
-    patterns
-  end
+    def add_file_route(path_alias, method, path)
+      current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
 
-  def add_route(path_alias, method, &action)
-    # check if it exists
-    @routes[path_alias][method] = { type: :route, action: }
-    # @routes[path_alias] = { type: :route, action: }
-  end
+      absolute_base_path = File.realpath(File.expand_path(path, current_file_dir))
 
-  def match_static_route(request_path, request_method)
-    static_route = @routes[request_path][request_method]
+      raise StandardError, 'File router cannot serve directory' if File.directory?(absolute_base_path)
 
-    return unless static_route
-
-    # return unless @routes.key?(request_path)
-
-    # static_route = @routes[request_path][request_method]
-
-    static_route_type = static_route[:type]
-
-    if static_route_type == :route
-      # Call the action for this route and return its result
-      static_route[:action].call
-    elsif static_route_type == :file
-      Response.from_file(static_route[:file_path])
+      @routes[path_alias][method] = { type: :file, file_path: absolute_base_path, action: nil }
     end
-  end
 
-  def match_dynamic_route(request_path)
-    @routes.each do |route_path, route|
-      next if route[:type] != :directory
+    def add_directory_route(path_alias, method, paths)
+      current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
 
-      patterns = route[:patterns]
+      patterns = expand_directory_glob_patterns(paths, current_file_dir)
 
+      raise StandardError, 'Route alias already exists' if @routes[path_alias] && @routes[path_alias][method]
+
+      @routes[path_alias][method] = { type: :directory, patterns:, action: nil }
+    end
+
+    def expand_directory_glob_patterns(paths, current_file_dir)
+      patterns = {}
+
+      paths.each do |path|
+        # Join the current file directory with the relative path
+        absolute_path = File.expand_path(path, current_file_dir)
+
+        relative_base_path = path.sub(/\*.*$/, '') + Pathname::SEPARATOR_LIST # remove glob patterns from path
+
+        absolute_base_path = File.realpath(File.expand_path(relative_base_path, current_file_dir))
+
+        raise StandardError, 'Directory router cannot serve file' if File.file?(absolute_base_path)
+
+        expanded_patterns = Dir[File.directory?(absolute_path) ? File.join(absolute_path, '**', '*') : absolute_path]
+
+        patterns[absolute_base_path] = expanded_patterns
+      end
+
+      patterns
+    end
+
+    def add_route(path_alias, method, &action)
+      # check if it exists
+      @routes[path_alias][method] = { type: :route, action: }
+      # @routes[path_alias] = { type: :route, action: }
+    end
+
+    def get_request_variables(route_path, request_path)
+      request_sections = request_path.split('/')
+
+      route_path_sections = route_path.split('/')
+
+      return nil unless request_sections.length == route_path_sections.length
+
+      request_variables = []
+      match = true
+
+      route_path_sections.each_with_index do |section, index|
+        request_section = request_sections[index]
+
+        if section[0] == ':'
+          request_variables.append(request_section)
+        elsif request_section != section
+          match = false
+          break
+        end
+      end
+
+      return request_variables if match
+
+      nil
+    end
+
+    def get_matching_pattern(patterns, route_path, request_path)
       patterns.each do |base_path, expanded_paths|
         relative_request_path = request_path.split(route_path)[1]
 
@@ -91,25 +95,59 @@ class Router
 
         next unless expanded_paths.include? expanded_request_path
 
-        return Response.from_file(expanded_request_path)
+        return expanded_request_path
       end
+
+      nil
     end
 
-    Response.not_found
-  end
+    def get_matching_route(request)
+      request_path = request.path
+      request_method = request.method
 
-  def match_route(request)
-    # Extract the path from the request
-    request_path = request.resource
-    request_method = request.method
+      @routes.each do |route_path, methods|
+        route = methods[request_method]
 
-    if @routes[request_path] && @routes[request_path][request_method]
-      return match_static_route(request_path,
-                                request_method)
+        case route[:type]
+        when :directory
+          patterns = route[:patterns]
+
+          pattern = get_matching_pattern(patterns, route_path, request_path)
+
+          return { route: route, pattern: pattern, type: :dynamic } unless pattern.nil?
+        when :file, :route
+          variables = get_request_variables(route_path, request_path)
+
+          return { route: route, variables: variables, type: :static } unless variables.nil?
+        else
+          next
+        end
+      end
+
+      nil
     end
 
-    # @routes.key?(request_path)
+    def match_route(request)
+      # Extract the path from the request
+      result = get_matching_route(request)
 
-    match_dynamic_route(request_path)
+      return Response.not_found if result.nil?
+
+      result_route = result[:route]
+
+      case result[:type]
+      when :static
+        case result_route[:type]
+        when :route
+          return result_route[:action].call(request.params, *result[:variables])
+        when :file
+          return Response.from_file(result_route[:file_path])
+        end
+      when :dynamic
+        return Response.from_file(result[:pattern])
+      end
+
+      Response.not_found
+    end
   end
 end

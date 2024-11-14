@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="request::get-fruits-with-filter.request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="4" assertions="7" time="0.0007684000302106142">
-    <testcase name="test_0003_parses the params" lineno="59" classname="request::get-fruits-with-filter.request" assertions="2" time="0.00024339999072253704" file="spec/http_parser_spec.rb">
+  <testsuite name="request::get-fruits-with-filter.request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="4" assertions="7" time="0.0014616999542340636">
+    <testcase name="test_0003_parses the params" lineno="59" classname="request::get-fruits-with-filter.request" assertions="2" time="0.0003288999432697892" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0004_parses the headers" lineno="63" classname="request::get-fruits-with-filter.request" assertions="3" time="0.00017820001812651753" file="spec/http_parser_spec.rb">
+    <testcase name="test_0002_parses the resource" lineno="56" classname="request::get-fruits-with-filter.request" assertions="1" time="0.000559499952942133" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0001_parses the http method" lineno="52" classname="request::get-fruits-with-filter.request" assertions="1" time="0.00013599998783320189" file="spec/http_parser_spec.rb">
+    <testcase name="test_0001_parses the http method" lineno="52" classname="request::get-fruits-with-filter.request" assertions="1" time="0.0002848000731319189" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0002_parses the resource" lineno="56" classname="request::get-fruits-with-filter.request" assertions="1" time="0.00021080003352835774" file="spec/http_parser_spec.rb">
+    <testcase name="test_0004_parses the headers" lineno="63" classname="request::get-fruits-with-filter.request" assertions="3" time="0.00028849998489022255" file="spec/http_parser_spec.rb">
     </testcase>
   </testsuite>
 </testsuites>

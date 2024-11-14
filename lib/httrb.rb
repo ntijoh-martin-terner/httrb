@@ -48,6 +48,10 @@ module Httrb
     @before_filters << filter
   end
 
+  def router
+    @router
+  end
+
   def self.start
     @server.intercept_response = lambda { |response, request|
       @before_filters.each do |filter|

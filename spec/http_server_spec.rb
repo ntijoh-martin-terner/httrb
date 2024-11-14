@@ -7,7 +7,7 @@ require 'uri' # Add this to use the URI class
 
 describe 'serve' do # rubocop:disable Metrics/BlockLength
   before do
-    @server = HTTPServer.new(4567)
+    @server = Httrb::HTTPServer.new(4567)
   end
 
   after do
@@ -15,7 +15,9 @@ describe 'serve' do # rubocop:disable Metrics/BlockLength
   end
 
   it 'adding route works' do
-    @server.router.add_route('/thing/') { Response.new(200, { 'Content-Type' => 'text/html' }, '<h1>Thing!</h1>') }
+    @server.router.add_route('/thing/', 'GET') do
+      Httrb::Response.new(200, { 'Content-Type' => 'text/html' }, '<h1>Thing!</h1>')
+    end
     @server.start
 
     uri = URI('http://localhost:4567/thing/')
@@ -27,7 +29,7 @@ describe 'serve' do # rubocop:disable Metrics/BlockLength
     assert_equal '<h1>Thing!</h1>', response.body # Body should match the content
   end
   it 'serves static txt files' do
-    @server.router.add_directory_route('/content/', ['./example_content/'])
+    @server.router.add_directory_route('/content/', 'GET', ['./example_content/'])
     @server.start
 
     uri = URI('http://localhost:4567/content/test.txt')
@@ -42,7 +44,7 @@ describe 'serve' do # rubocop:disable Metrics/BlockLength
     assert_equal file_content, response.body # Body should match the content
   end
   it 'serves static gif files' do
-    @server.router.add_directory_route('/content/', ['./example_content/'])
+    @server.router.add_directory_route('/content/', 'GET', ['./example_content/'])
     @server.start
 
     uri = URI('http://localhost:4567/content/frog.gif')
@@ -57,7 +59,7 @@ describe 'serve' do # rubocop:disable Metrics/BlockLength
     assert_equal file_content, response.body # Status code should be 200
   end
   it 'serves static html files' do
-    @server.router.add_directory_route('/content/', ['./example_content/'])
+    @server.router.add_directory_route('/content/', 'GET', ['./example_content/'])
     @server.start
 
     uri = URI('http://localhost:4567/content/stuff/test.html')
@@ -74,7 +76,7 @@ describe 'serve' do # rubocop:disable Metrics/BlockLength
     assert_equal file_content, response.body # Status code should be 200
   end
   it 'returns 404 for nonexistent file' do
-    @server.router.add_directory_route('/content/', ['./example_content/'])
+    @server.router.add_directory_route('/content/', 'GET', ['./example_content/'])
     @server.start
 
     uri = URI('http://localhost:4567/content/nonexistent.txt')

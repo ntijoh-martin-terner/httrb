@@ -6,7 +6,7 @@ require_relative '../lib/request'
 describe 'request' do # rubocop:disable Metrics/BlockLength
   describe 'get-index.request' do
     before do
-      @request = Request.new(File.read('./spec/example_requests/get-index.request.txt'))
+      @request = Httrb::Request.new(File.read('./spec/example_requests/get-index.request.txt'))
     end
 
     it 'parses the http method' do
@@ -23,7 +23,7 @@ describe 'request' do # rubocop:disable Metrics/BlockLength
   end
   describe 'get-examples.request' do
     before do
-      @request = Request.new(File.read('./spec/example_requests/get-examples.request.txt'))
+      @request = Httrb::Request.new(File.read('./spec/example_requests/get-examples.request.txt'))
     end
 
     it 'parses the http method' do
@@ -46,7 +46,7 @@ describe 'request' do # rubocop:disable Metrics/BlockLength
   end
   describe 'get-fruits-with-filter.request' do
     before do
-      @request = Request.new(File.read('./spec/example_requests/get-fruits-with-filter.request.txt'))
+      @request = Httrb::Request.new(File.read('./spec/example_requests/get-fruits-with-filter.request.txt'))
     end
 
     it 'parses the http method' do
@@ -68,7 +68,7 @@ describe 'request' do # rubocop:disable Metrics/BlockLength
   end
   describe 'post-login.request' do
     before do
-      @request = Request.new(File.read('./spec/example_requests/post-login.request.txt'))
+      @request = Httrb::Request.new(File.read('./spec/example_requests/post-login.request.txt'))
     end
 
     it 'parses the http method' do
@@ -90,7 +90,7 @@ describe 'request' do # rubocop:disable Metrics/BlockLength
     end
 
     it 'parses the params' do
-      @request = Request.new(File.read('./spec/example_requests/post-login.request.txt'))
+      @request = Httrb::Request.new(File.read('./spec/example_requests/post-login.request.txt'))
       _(@request.params['username']).must_equal 'grillkorv'
       _(@request.params['password']).must_equal 'verys3cret!'
     end
