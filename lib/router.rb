@@ -8,14 +8,17 @@ module Httrb
   # Router
   class Router
     def initialize
-      # @routes = {}
       @routes = Hash.new { |hash, key| hash[key] = {} }
     end
 
     def add_file_route(path_alias, method, path)
       current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
 
-      absolute_base_path = File.realpath(File.expand_path(path, current_file_dir))
+      absolute_base_path = if File.file?(path)
+                             path
+                           else
+                             File.realpath(File.expand_path(path, current_file_dir))
+                           end
 
       raise StandardError, 'File router cannot serve directory' if File.directory?(absolute_base_path)
 
@@ -37,7 +40,11 @@ module Httrb
 
       paths.each do |path|
         # Join the current file directory with the relative path
-        absolute_path = File.expand_path(path, current_file_dir)
+        absolute_path = if File.directory?(path)
+                          path
+                        else
+                          File.expand_path(path, current_file_dir)
+                        end
 
         relative_base_path = path.sub(/\*.*$/, '') + Pathname::SEPARATOR_LIST # remove glob patterns from path
 
@@ -56,7 +63,6 @@ module Httrb
     def add_route(path_alias, method, &action)
       # check if it exists
       @routes[path_alias][method] = { type: :route, action: }
-      # @routes[path_alias] = { type: :route, action: }
     end
 
     def get_request_variables(route_path, request_path)

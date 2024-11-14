@@ -52,22 +52,25 @@ module Httrb
     @router
   end
 
+  def self.intercept_response(response, request)
+    @before_filters.each do |filter|
+      instance_exec(request, response, &filter) # TODO: add more functionality
+    end
+
+    return response if response.status != 404
+
+    Response.not_found
+  end
+
   def self.start
-    @server.intercept_response = lambda { |response, request|
-      @before_filters.each do |filter|
-        instance_exec(request, response, &filter)
-      end
+    @server.intercept_response = method(:intercept_response)
 
-      return response if response.status != 404
+    current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
 
-      Response.not_found
-    }
+    absolute_base_path = File.expand_path('./public/', current_file_dir)
 
-    # current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
+    @server.router.add_directory_route('/public/', 'GET', [absolute_base_path]) if File.directory?(absolute_base_path)
 
-    # absolute_base_path = File.realpath(File.expand_path('./public/', current_file_dir))
-
-    # @server.router.add_directory_route('/public/', 'GET', [absolute_base_path])
     @server.start
     sleep
   end
