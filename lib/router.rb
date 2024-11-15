@@ -145,7 +145,7 @@ module Httrb
       when :static
         case result_route[:type]
         when :route
-          return result_route[:action].call(request.params, *result[:variables])
+          return result_route[:action].call(request, result[:variables])
         when :file
           return Response.from_file(result_route[:file_path])
         end

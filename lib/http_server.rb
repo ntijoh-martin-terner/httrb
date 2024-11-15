@@ -9,7 +9,7 @@ module Httrb
   # HTTPServer
   class HTTPServer
     attr_reader :router, :port, :server
-    attr_accessor :intercept_response
+    attr_accessor :intercept_response, :intercept_request
 
     def initialize(port)
       @port = port
@@ -17,6 +17,7 @@ module Httrb
       @router = Router.new
       @thread = nil
       @intercept_response = ->(response, _) { response }
+      @intercept_request = ->(request) { request }
     end
 
     def start
@@ -31,6 +32,8 @@ module Httrb
           end
 
           request = Request.new(data)
+
+          request = @intercept_request.call(request)
 
           response = @router.match_route(request)
 
