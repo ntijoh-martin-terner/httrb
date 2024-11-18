@@ -52,6 +52,8 @@ module Httrb
       @routes.each do |route_path, methods|
         route = methods[request_method]
 
+        next unless route
+
         case route[:type]
         when :directory
           patterns = route[:patterns]

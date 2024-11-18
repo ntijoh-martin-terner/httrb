@@ -20,18 +20,33 @@ module Httrb
       @intercept_request = ->(request) { request }
     end
 
+    def read_raw(session)
+      raw_request = ''
+
+      # Read headers
+      while (line = session.gets) && line !~ /^\s*$/
+        raw_request += line
+      end
+
+      # Get content length and read the body if needed
+      content_length = raw_request[/Content-Length: (\d+)/i, 1].to_i
+      if content_length.positive?
+        raw_request += "\r\n"
+        raw_request += session.read(content_length) # Read the body based on the Content-Length
+      end
+
+      raw_request
+    end
+
     def start
       @server = TCPServer.new(@port)
       puts "Listening on #{@port}"
 
       @thread = Thread.new do
         while (session = @server.accept)
-          data = ''
-          while (line = session.gets) && line !~ /^\s*$/
-            data += line
-          end
+          raw_request = read_raw(session)
 
-          request = Request.new(data)
+          request = Request.new(raw_request)
 
           request = @intercept_request.call(request)
 

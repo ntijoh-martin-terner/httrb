@@ -1,29 +1,22 @@
+# frozen_string_literal: true
+
 # router_helper.rb
 module RouterHelper
-  def resolve_paths(path, current_file_dir)
-    absolute_path = if File.directory?(path)
-                      path
-                    else
-                      File.expand_path(path, current_file_dir)
-                    end
-
-    relative_base_path = path.sub(/\*.*$/, '') + Pathname::SEPARATOR_LIST
-    absolute_base_path = File.realpath(File.expand_path(relative_base_path, current_file_dir))
-
-    [absolute_path, absolute_base_path]
-  end
-
   def expand_directory_glob_patterns(paths, current_file_dir)
     patterns = {}
 
     paths.each do |path|
-      absolute_path, absolute_base_path = resolve_paths(path, current_file_dir)
+      absolute_path = if File.directory?(path)
+                        path
+                      else
+                        File.expand_path(path, current_file_dir)
+                      end
 
-      raise StandardError, 'Directory router cannot serve file' if File.file?(absolute_base_path)
+      raise StandardError, 'Directory router cannot serve file' if File.file?(absolute_path)
 
       expanded_patterns = Dir[File.directory?(absolute_path) ? File.join(absolute_path, '**', '*') : absolute_path]
 
-      patterns[absolute_base_path] = expanded_patterns
+      patterns[absolute_path] = expanded_patterns
     end
 
     patterns
