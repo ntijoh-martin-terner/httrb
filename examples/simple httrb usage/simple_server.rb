@@ -18,6 +18,7 @@ Httrb.get('/foo/:variable/hello/:second-variable/:lastvariable') do |variable, s
   Httrb::Response.json({ :name => 'Konata Izumi', 'age' => 16, 1 => 2, :variable => variable, :second => second,
                          :last => last, test: @test })
 end
+
 Httrb.get('/foo/') do
   Httrb::Response.json({ :name => 'Konata Izumi', 'age' => 16, 1 => 2, params: params })
 end

@@ -108,7 +108,7 @@ module Httrb
     # return response if response.status != 404
     context = RequestContext.new(request, response, nil)
 
-    context.instance_eval(&@after_filter) # TODO: add more functionality
+    context.instance_eval(&@after_filter) if @after_filter
 
     context.response
   end
