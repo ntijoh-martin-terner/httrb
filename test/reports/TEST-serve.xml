@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="serve" filepath="spec/http_server_spec.rb" skipped="0" failures="0" errors="0" tests="5" assertions="9" time="0.24319660000037402">
-    <testcase name="test_0004_serves static html files" lineno="61" classname="serve" assertions="2" time="0.06018879998009652" file="spec/http_server_spec.rb">
+  <testsuite name="serve" filepath="spec/router_spec.rb" skipped="0" failures="0" errors="0" tests="5" assertions="9" time="0.23043920000782236">
+    <testcase name="test_0001_adding route works" lineno="17" classname="serve" assertions="2" time="0.049105599988251925" file="spec/router_spec.rb">
     </testcase>
-    <testcase name="test_0002_serves static txt files" lineno="31" classname="serve" assertions="2" time="0.04615090001607314" file="spec/http_server_spec.rb">
+    <testcase name="test_0004_serves static html files" lineno="61" classname="serve" assertions="2" time="0.04514579998794943" file="spec/router_spec.rb">
     </testcase>
-    <testcase name="test_0005_returns 404 for nonexistent file" lineno="78" classname="serve" assertions="1" time="0.045743900001980364" file="spec/http_server_spec.rb">
+    <testcase name="test_0002_serves static txt files" lineno="31" classname="serve" assertions="2" time="0.04639179998775944" file="spec/router_spec.rb">
     </testcase>
-    <testcase name="test_0001_adding route works" lineno="17" classname="serve" assertions="2" time="0.04597879998618737" file="spec/http_server_spec.rb">
+    <testcase name="test_0005_returns 404 for nonexistent file" lineno="78" classname="serve" assertions="1" time="0.044456400035414845" file="spec/router_spec.rb">
     </testcase>
-    <testcase name="test_0003_serves static gif files" lineno="46" classname="serve" assertions="2" time="0.04513420001603663" file="spec/http_server_spec.rb">
+    <testcase name="test_0003_serves static gif files" lineno="46" classname="serve" assertions="2" time="0.04533960000844672" file="spec/router_spec.rb">
     </testcase>
   </testsuite>
 </testsuites>

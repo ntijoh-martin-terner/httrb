@@ -18,13 +18,19 @@ module Httrb
     #
     # @param [Integer] port The port of the server
     #
-    def initialize(port)
-      @port = port
+    def initialize
       @server = nil
       @router = Router.new
       @thread = nil
       @intercept_response = ->(response, _) { response }
       @intercept_request = ->(request) { request }
+    end
+
+    #
+    # Resets the router
+    #
+    def clear_routes
+      @router = Router.new
     end
 
     #
@@ -57,7 +63,9 @@ module Httrb
     #
     # Starts the http server
     #
-    def start
+    def start(port)
+      @port = port
+
       @server = TCPServer.new(@port)
       puts "Listening on #{@port}"
 

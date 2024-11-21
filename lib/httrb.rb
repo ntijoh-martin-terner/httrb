@@ -22,7 +22,7 @@ require_relative './request'
 #   end
 #
 module Httrb
-  @server = HTTPServer.new(4567)
+  @server = HTTPServer.new
   @before_filter = nil
   @after_filter = nil
 
@@ -197,9 +197,16 @@ module Httrb
   end
 
   #
+  # Resets the router
+  #
+  def self.clear_routes
+    @server.clear_routes
+  end
+
+  #
   # Starts the server
   #
-  def self.start
+  def self.start(port = 4567, blocking = true)
     @server.intercept_response = method(:intercept_response)
 
     current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
@@ -208,7 +215,12 @@ module Httrb
 
     @server.router.add_directory_route('/public/', 'GET', [absolute_base_path]) if File.directory?(absolute_base_path)
 
-    @server.start
-    sleep
+    @server.start(port)
+
+    sleep if blocking
+  end
+
+  def self.stop
+    @server.stop
   end
 end
