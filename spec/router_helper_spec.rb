@@ -6,28 +6,44 @@ require_relative '../lib/router_helper'
 describe RouterHelper do
   include RouterHelper
 
+  describe '#get_request_variables' do
+    it 'gets request variables' do
+      get_request_variables('/:test/:test2/', '/abc/bcd')
+    end
+  end
   describe '#expand_directory_glob_patterns' do
     it 'expands directory glob patterns correctly' do
       example_content_path = File.expand_path(File.join(__dir__, '/example_content'))
 
-      p example_content_path
-
       # Resolve paths
       result = expand_directory_glob_patterns(['./*'], example_content_path)
 
-      # Get the expected paths and normalize them
-      expected_patterns = {
-        File.expand_path('./*',
-                         example_content_path) => Dir[File.expand_path('./*', example_content_path)].map do |file|
-                           File.expand_path(file)
-                         end
-      }
+      paths = result[File.join(example_content_path, '/*')]
 
       # Normalize and compare
-      result.each do |base_path, files|
-        expect(File.expand_path(base_path)).to eq(File.expand_path(expected_patterns.keys.first))
-        expect(files.map { |file| File.expand_path(file) }).to match_array(expected_patterns.values.first)
-      end
+      assert_equal File.join(example_content_path, '/frog.gif'), paths[0]
+      assert_equal File.join(example_content_path, '/stuff'), paths[1]
+      assert_equal File.join(example_content_path, '/sv.png'), paths[2]
+      assert_equal File.join(example_content_path, '/test.txt'), paths[3]
+    end
+    it 'gets matching pattern' do
+      example_content_path = File.expand_path(File.join(__dir__, '/example_content'))
+
+      patterns = { File.join(example_content_path) => [File.join(example_content_path, '/frog.gif'),
+                                                       File.join(example_content_path, '/stuff/test.html')] }
+
+      # Resolve paths
+      matching_pattern_frog = get_matching_pattern(patterns, '/', '/frog.gif')
+      matching_pattern_stuff_html = get_matching_pattern(patterns, '/', '/stuff/test.html')
+
+      # Normalize and compare
+      assert_equal File.join(example_content_path, '/frog.gif'), matching_pattern_frog
+      assert_equal File.join(example_content_path, '/stuff/test.html'), matching_pattern_stuff_html
+    end
+    it 'gets request variables' do
+      assert_equal %w[hey that], get_request_variables('/:hello/:this/', '/hey/that/')
+      assert_equal %w[hey that], get_request_variables('/notvar/:hello/:this/notvar/', '/notvar/hey/that/notvar/')
+      assert_equal nil, get_request_variables('/notvar/:hello/:this/notvar/', '/notvar/hey/that/notvarw/')
     end
   end
 end

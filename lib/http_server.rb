@@ -6,11 +6,18 @@ require_relative 'router'
 require 'socket'
 
 module Httrb
+  #
   # HTTPServer
+  #
   class HTTPServer
     attr_reader :router, :port, :server
     attr_accessor :intercept_response, :intercept_request
 
+    #
+    # Initializes HTTPServer
+    #
+    # @param [Integer] port The port of the server
+    #
     def initialize(port)
       @port = port
       @server = nil
@@ -20,6 +27,15 @@ module Httrb
       @intercept_request = ->(request) { request }
     end
 
+    #
+    # Reads the session response, including content
+    #
+    # @param [String] session <description>
+    #
+    # @return [String] The raw request
+    #
+    # @private
+    #
     def read_raw(session)
       raw_request = ''
 
@@ -38,6 +54,9 @@ module Httrb
       raw_request
     end
 
+    #
+    # Starts the http server
+    #
     def start
       @server = TCPServer.new(@port)
       puts "Listening on #{@port}"
@@ -60,6 +79,9 @@ module Httrb
       end
     end
 
+    #
+    # Stops the http server
+    #
     def stop
       p 'stopping'
       @thread&.kill # Kill the server thread

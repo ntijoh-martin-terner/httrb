@@ -1,12 +1,21 @@
 # frozen_string_literal: true
 
 require 'minitest/test_task'
+require 'yard'
 
 Minitest::TestTask.create(:test) do |t|
   t.libs << 'spec'
   t.libs << 'lib'
   t.warning = false
   t.test_globs = ['spec/**/*_spec.rb']
+end
+
+task :doc do 
+  YARD::Rake::YardocTask.new do |t|
+    t.files   = ['lib/**/*.rb']   # optional
+    t.options = ['--any', '--extra', '--opts'] # optional
+    t.stats_options = ['--list-undoc']         # optional
+  end
 end
 
 task :test

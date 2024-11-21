@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="request::get-examples.request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="4" assertions="7" time="0.0022207000001799315">
-    <testcase name="test_0001_parses the http method" lineno="29" classname="request::get-examples.request" assertions="1" time="0.0008196000126190484" file="spec/http_parser_spec.rb">
+  <testsuite name="request::get-examples.request" filepath="spec/http_parser_spec.rb" skipped="0" failures="0" errors="0" tests="4" assertions="7" time="0.0007913999725133181">
+    <testcase name="test_0004_parses the headers" lineno="40" classname="request::get-examples.request" assertions="4" time="0.00025270000332966447" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0004_parses the headers" lineno="40" classname="request::get-examples.request" assertions="4" time="0.00037799999699927866" file="spec/http_parser_spec.rb">
+    <testcase name="test_0002_parses the version" lineno="33" classname="request::get-examples.request" assertions="1" time="0.000222100003156811" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0003_parses the resource" lineno="37" classname="request::get-examples.request" assertions="1" time="0.00048779998905956745" file="spec/http_parser_spec.rb">
+    <testcase name="test_0001_parses the http method" lineno="29" classname="request::get-examples.request" assertions="1" time="0.0001289999927394092" file="spec/http_parser_spec.rb">
     </testcase>
-    <testcase name="test_0002_parses the version" lineno="33" classname="request::get-examples.request" assertions="1" time="0.000535300001502037" file="spec/http_parser_spec.rb">
+    <testcase name="test_0003_parses the resource" lineno="37" classname="request::get-examples.request" assertions="1" time="0.00018759997328743339" file="spec/http_parser_spec.rb">
     </testcase>
   </testsuite>
 </testsuites>

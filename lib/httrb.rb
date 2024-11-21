@@ -5,13 +5,32 @@ require_relative './response'
 require_relative './router'
 require_relative './request'
 
-# Httrb
+#
+# Httrb: A simple HTTP server framework
+#
+# This module provides a lightweight, Sinatra-like framework for creating
+# HTTP servers in Ruby. It handles routing, requests, and responses, and
+# allows you to define custom behavior for your HTTP server.
+#
+# Features:
+# - Easy route definition
+# - Lightweight and configurable
+#
+# @example
+#   Httrb.get('/foo/:variable/:second/') do | variable, second |
+#     # Your route logic here
+#   end
+#
 module Httrb
   @server = HTTPServer.new(4567)
   @before_filter = nil
   @after_filter = nil
 
+  #
   # RequestContext
+  #
+  # @private
+  #
   class RequestContext
     attr_accessor :request, :response, :variables, :params
 
@@ -23,6 +42,15 @@ module Httrb
     end
   end
 
+  #
+  # Adds a route to the server
+  #
+  # @param [String] path path alias for the route
+  # @param [String] method matching method for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
+  # @private
+  #
   def self.add_route(path, method, &block)
     @server.router.add_route(path, method) do |request, variables|
       # Create a new context for each request
@@ -41,69 +69,124 @@ module Httrb
     end
   end
 
-  # Define a 'get' method to register routes
+  #
+  # Adds a get route to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.get(path, &block)
     add_route(path, 'GET', &block)
   end
 
+  #
+  # Adds a post route to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.post(path, &block)
     add_route(path, 'POST', &block)
   end
 
+  #
+  # Adds a put route to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.put(path, &block)
     add_route(path, 'PUT', &block)
   end
 
+  #
+  # Adds a delete route to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.delete(path, &block)
     add_route(path, 'DELETE', &block)
   end
 
+  #
+  # Adds a patch route to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.patch(path, &block)
     add_route(path, 'PATCH', &block)
   end
 
+  #
+  # Adds an options route to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.options(path, &block)
     add_route(path, 'OPTIONS', &block)
   end
 
+  #
+  # Adds a link route to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.link(path, &block)
     add_route(path, 'LINK', &block)
   end
 
+  #
+  # Adds an unlink route to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.unlink(path, &block)
     add_route(path, 'UNLINK', &block)
   end
 
+  #
+  # Adds a route applying to any method to the server
+  #
+  # @param [<Type>] path path path alias for the route
+  # @param [Proc] block The code to execute when the route is matched.
+  #
   def self.any(path, &block)
     %w[GET POST PUT DELETE PATCH OPTIONS LINK UNLINK].each do |method|
       add_route(path, method, &block)
     end
   end
 
-  # Define a method to add before filters
+  #
+  # Adds a before filter which will run before a route gets matched
+  #
+  # @param [Proc] filter The code to execute when a request is made
+  #
   def self.before(&filter)
     @before_filter = filter
   end
 
+  #
+  # Adds an after filter which will run after a route gets matched
+  #
+  # @param [Proc] filter The code to execute before a response is sent
+  #
   def self.after(&filter)
     @after_filter = filter
   end
 
-  def router
-    @router
-  end
-
-  # def self.intercept_request(request)
-  #   return response if response.status != 404
-
-  #   context = RequestContext.new(request, nil, nil)
-
-  #   context.instance_eval(&@before_filter) # TODO: add more functionality
-
-  #   context.request
-  #   # Response.not_found
-  # end
-
+  #
+  # Intercepts a response and runs the 'after' filter on it
+  #
+  # @param [Response] response Response class
+  # @param [Request] request Request class
+  #
+  # @private
+  #
   def self.intercept_response(response, request)
     # return response if response.status != 404
     context = RequestContext.new(request, response, nil)
@@ -113,8 +196,10 @@ module Httrb
     context.response
   end
 
+  #
+  # Starts the server
+  #
   def self.start
-    # @server.intercept_request = method(:intercept_request)
     @server.intercept_response = method(:intercept_response)
 
     current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))

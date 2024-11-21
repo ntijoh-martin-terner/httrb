@@ -133,6 +133,8 @@ GEM
       axiom-types (~> 0.1)
       coercible (~> 1.0)
       descendants_tracker (~> 0.0, >= 0.0.3)
+    webrick (1.9.0)
+    yard (0.9.37)
     zeitwerk (2.7.1)
 
 PLATFORMS
@@ -146,6 +148,8 @@ DEPENDENCIES
   rubocop
   rubycritic
   simplecov
+  webrick
+  yard
 
 BUNDLED WITH
    2.4.19
