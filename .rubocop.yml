@@ -4,3 +4,5 @@ Metrics/ClassLength:
   Max: 200
 AllCops:
   TargetRubyVersion: 3.2.3
+  Include:
+    - lib/*

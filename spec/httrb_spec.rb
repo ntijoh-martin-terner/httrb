@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 require_relative 'spec_helper'
-# require_relative '../lib/httrb'
+require_relative '../lib/httrb'
 require 'net/http'
 require 'uri'
-load File.expand_path('../lib/httrb.rb', __dir__)
+# require 'uri'
+# load File.expand_path('../lib/httrb.rb', __dir__)
 
-describe 'Httrb Framework' do
+describe 'Httrb Framework' do # rubocop:disable Metrics/BlockLength
   before do
     Httrb.clear_routes
 
