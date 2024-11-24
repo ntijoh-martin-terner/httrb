@@ -12,12 +12,8 @@ describe 'Httrb Framework' do # rubocop:disable Metrics/BlockLength
     Httrb.clear_routes
 
     # Define routes and filters before starting the server
-    Httrb.before do
+    Httrb.before_route do
       @test = 'rest'
-    end
-
-    Httrb.after do
-      # Optionally log or modify the response
     end
 
     Httrb.get('/foo/:variable/hello/:second-variable/:lastvariable') do |variable, second, last|

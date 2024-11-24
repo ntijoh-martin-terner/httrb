@@ -86,7 +86,7 @@ module Httrb
     #
     # @param [String] path_alias The alias path for the route
     # @param [String] method The HTTP method for the route
-    # @param [Proc] &action The code to run when the route is matched, should return the response of the route.
+    # @param [Proc] action The code to run when the route is matched, should return the response of the route.
     #
     # @raise [StandardError] If the provided route alias is already assigned to the same method.
     #

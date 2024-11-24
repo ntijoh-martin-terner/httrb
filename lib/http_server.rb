@@ -63,6 +63,8 @@ module Httrb
     #
     # Starts the http server
     #
+    # @param [Integer] port The port of the server
+    #
     def start(port)
       @port = port
 

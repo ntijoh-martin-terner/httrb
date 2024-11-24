@@ -23,6 +23,7 @@ require_relative './request'
 #
 module Httrb
   @server = HTTPServer.new
+  @before_route_filter = nil
   @before_filter = nil
   @after_filter = nil
 
@@ -61,7 +62,9 @@ module Httrb
       #   context.instance_eval(&filter) # this does not intercept non existent routes... :(
       # end
 
-      context.instance_exec(&@before_filter) if @before_filter
+      override_response = context.instance_exec(&@before_route_filter) if @before_route_filter
+
+      next override_response if override_response.instance_of?(Response)
 
       # Execute the route block in the same context
       # next context.instance_eval(&block)
@@ -162,7 +165,16 @@ module Httrb
   end
 
   #
-  # Adds a before filter which will run before a route gets matched
+  # Adds a before filter which will run before a route block gets evaluated
+  #
+  # @param [Proc] filter The code to execute when a request is made
+  #
+  def self.before_route(&filter)
+    @before_route_filter = filter
+  end
+
+  #
+  # Adds a before filter which will run before routes get matched
   #
   # @param [Proc] filter The code to execute when a request is made
   #
@@ -182,6 +194,21 @@ module Httrb
   #
   # Intercepts a response and runs the 'after' filter on it
   #
+  # @param [Request] request Request class
+  #
+  # @private
+  #
+  def self.intercept_request(request)
+    context = RequestContext.new(request, nil, nil)
+
+    context.instance_exec(&@before_filter) if @before_filter
+
+    context.request
+  end
+
+  #
+  # Intercepts a response and runs the 'after' filter on it
+  #
   # @param [Response] response Response class
   # @param [Request] request Request class
   #
@@ -191,7 +218,9 @@ module Httrb
     # return response if response.status != 404
     context = RequestContext.new(request, response, nil)
 
-    context.instance_eval(&@after_filter) if @after_filter
+    override_response = context.instance_eval(&@after_filter) if @after_filter
+
+    return override_response if override_response.instance_of?(Response)
 
     context.response
   end
@@ -203,23 +232,31 @@ module Httrb
     @server.clear_routes
   end
 
+
   #
   # Starts the server
   #
+  # @param [<Type>] port The port of the server
+  # @param [<Type>] blocking Whether or not the server should block the main thread
+  #
   def self.start(port = 4567, blocking = true)
     @server.intercept_response = method(:intercept_response)
+    @server.intercept_request = method(:intercept_request)
 
     current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
 
     absolute_base_path = File.expand_path('./public/', current_file_dir)
 
-    @server.router.add_directory_route('/public/', 'GET', [absolute_base_path]) if File.directory?(absolute_base_path)
+    @server.router.add_directory_route('/', 'GET', [absolute_base_path]) if File.directory?(absolute_base_path)
 
     @server.start(port)
 
     sleep if blocking
   end
 
+  #
+  # Stops the server
+  #
   def self.stop
     @server.stop
   end

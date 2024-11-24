@@ -44,7 +44,6 @@ module RouterHelper
       raise StandardError, 'Directory router cannot serve file' if File.file?(absolute_path)
 
       expanded_patterns = Dir[File.directory?(absolute_path) ? File.join(absolute_path, '**', '*') : absolute_path]
-                          # .select { |path| File.file?(path) }
 
       patterns[absolute_path] = expanded_patterns
     end

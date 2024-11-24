@@ -3,15 +3,14 @@
 require_relative '../../lib/httrb'
 # require_relative '../../lib/response'
 
-Httrb.before do
-  p request
+Httrb.before_route do
   @test = 'rest'
-  p 'hello'
 end
 
 Httrb.after do
-  p 'after :L'
-  # @response = Httrb::Response.redirect('/foo/', 302)
+  if response.status == 404
+    next Httrb::Response.json({ :error => "not Found" })
+  end
 end
 
 Httrb.get('/foo/:variable/hello/:second-variable/:lastvariable') do |variable, second, last|
