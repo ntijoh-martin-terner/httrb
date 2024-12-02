@@ -2,7 +2,8 @@
 
 require_relative 'request'
 require_relative 'response'
-require_relative 'router'
+# require_relative 'router'
+require_relative 'radix_tree'
 require 'socket'
 
 module Httrb
@@ -18,9 +19,9 @@ module Httrb
     #
     # @param [Integer] port The port of the server
     #
-    def initialize
+    def initialize(router, routing_tree = RadixTree)
       @server = nil
-      @router = Router.new
+      @router = router.new(routing_tree)
       @thread = nil
       @intercept_response = ->(response, _) { response }
       @intercept_request = ->(request) { request }
@@ -30,7 +31,7 @@ module Httrb
     # Resets the router
     #
     def clear_routes
-      @router = Router.new
+      @router.clear_routes
     end
 
     #
@@ -72,21 +73,30 @@ module Httrb
       puts "Listening on #{@port}"
 
       @thread = Thread.new do
-        while (session = @server.accept)
-          raw_request = read_raw(session)
-
-          request = Request.new(raw_request)
-
-          request = @intercept_request.call(request)
-
-          response = @router.match_route(request)
-
-          response = @intercept_response.call(response, request)
-
-          session.print response.to_s
-          session.close
-        end
+        loop { handle_session(@server.accept) }
       end
+    end
+
+    #
+    # Handles a session
+    #
+    # @param [TCPSocket] session session
+    #
+    # @private
+    #
+    def handle_session(session)
+      raw_request = read_raw(session)
+
+      request = Request.new(raw_request)
+
+      request = @intercept_request.call(request)
+
+      response = @router.match_route(request)
+
+      response = @intercept_response.call(response, request)
+
+      session.print response.to_s
+      session.close
     end
 
     #

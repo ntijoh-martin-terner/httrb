@@ -17,4 +17,4 @@ Httrb.get('/home/') do
   Httrb::Response.new(200, { 'Content-Type' => 'text/html' }, result)
 end
 
-Httrb.start
+Httrb.start_blocking

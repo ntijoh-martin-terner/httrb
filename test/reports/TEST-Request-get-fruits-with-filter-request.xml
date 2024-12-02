@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="request::get-fruits-with-filter.request" filepath="spec/request_spec.rb" skipped="0" failures="0" errors="0" tests="4" assertions="7" time="0.0009658999993007455">
-    <testcase name="test_0001_parses the http method" lineno="52" classname="request::get-fruits-with-filter.request" assertions="1" time="0.00024609999991298537" file="spec/request_spec.rb">
+  <testsuite name="request::get-fruits-with-filter.request" filepath="spec/request_spec.rb" skipped="0" failures="0" errors="0" tests="4" assertions="7" time="0.0016348999924957752">
+    <testcase name="test_0001_parses the http method" lineno="52" classname="request::get-fruits-with-filter.request" assertions="1" time="0.00042079994454979897" file="spec/request_spec.rb">
     </testcase>
-    <testcase name="test_0003_parses the params" lineno="59" classname="request::get-fruits-with-filter.request" assertions="2" time="0.00022019999960321002" file="spec/request_spec.rb">
+    <testcase name="test_0002_parses the resource" lineno="56" classname="request::get-fruits-with-filter.request" assertions="1" time="0.0004813999403268099" file="spec/request_spec.rb">
     </testcase>
-    <testcase name="test_0004_parses the headers" lineno="63" classname="request::get-fruits-with-filter.request" assertions="3" time="0.0002393999998275831" file="spec/request_spec.rb">
+    <testcase name="test_0003_parses the params" lineno="59" classname="request::get-fruits-with-filter.request" assertions="2" time="0.0003575000446289778" file="spec/request_spec.rb">
     </testcase>
-    <testcase name="test_0002_parses the resource" lineno="56" classname="request::get-fruits-with-filter.request" assertions="1" time="0.0002601999999569671" file="spec/request_spec.rb">
+    <testcase name="test_0004_parses the headers" lineno="63" classname="request::get-fruits-with-filter.request" assertions="3" time="0.0003752000629901886" file="spec/request_spec.rb">
     </testcase>
   </testsuite>
 </testsuites>

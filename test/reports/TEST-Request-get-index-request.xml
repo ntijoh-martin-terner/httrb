@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="request::get-index.request" filepath="spec/request_spec.rb" skipped="0" failures="0" errors="0" tests="3" assertions="4" time="0.0009601000001566717">
-    <testcase name="test_0001_parses the http method" lineno="12" classname="request::get-index.request" assertions="1" time="0.0004704000002675457" file="spec/request_spec.rb">
+  <testsuite name="request::get-index.request" filepath="spec/request_spec.rb" skipped="0" failures="0" errors="0" tests="3" assertions="4" time="0.0019483000505715609">
+    <testcase name="test_0001_parses the http method" lineno="12" classname="request::get-index.request" assertions="1" time="0.0011342000216245651" file="spec/request_spec.rb">
     </testcase>
-    <testcase name="test_0003_parses the headers" lineno="19" classname="request::get-index.request" assertions="2" time="0.00029799999992974335" file="spec/request_spec.rb">
+    <testcase name="test_0002_parses the resource" lineno="16" classname="request::get-index.request" assertions="1" time="0.0003831000067293644" file="spec/request_spec.rb">
     </testcase>
-    <testcase name="test_0002_parses the resource" lineno="16" classname="request::get-index.request" assertions="1" time="0.0001916999999593827" file="spec/request_spec.rb">
+    <testcase name="test_0003_parses the headers" lineno="19" classname="request::get-index.request" assertions="2" time="0.00043100002221763134" file="spec/request_spec.rb">
     </testcase>
   </testsuite>
 </testsuites>

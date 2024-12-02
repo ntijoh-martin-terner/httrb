@@ -1,5 +1,8 @@
 {
     "editor.defaultFormatter": null,
     "editor.formatOnPaste": false,
-    "editor.formatOnSave": false
+    "editor.formatOnSave": false,
+    "[ruby]": {
+        "editor.defaultFormatter": "misogi.ruby-rubocop"
+    }
 }

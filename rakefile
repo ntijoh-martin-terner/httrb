@@ -1,7 +1,20 @@
 # frozen_string_literal: true
 
 require 'minitest/test_task'
+require 'rubycritic/rake_task'
 require 'yard'
+
+RubyCritic::RakeTask.new do |task|
+  # Name of RubyCritic task. Defaults to :rubycritic.
+
+  task.options = '--no-browser'
+
+  # Defaults to false
+  task.verbose = true
+
+  # Fail the Rake task if RubyCritic doesn't pass. Defaults to true
+  task.fail_on_error = true
+end
 
 Minitest::TestTask.create(:test) do |t|
   t.libs << 'spec'
@@ -10,12 +23,30 @@ Minitest::TestTask.create(:test) do |t|
   t.test_globs = ['spec/**/*_spec.rb']
 end
 
-task :doc do 
+task :doc do
   YARD::Rake::YardocTask.new do |t|
-    t.files   = ['lib/**/*.rb']   # optional
+    t.files   = ['lib/**/*.rb'] # optional
     t.options = ['--any', '--extra', '--opts'] # optional
     t.stats_options = ['--list-undoc']         # optional
   end
 end
 
 task :test
+
+desc 'Run Httrb benchmarks'
+task :benchmark do
+  # Start the server as a separate process
+  server_process = Process.spawn('ruby ./benchmark/benchmark_routes.rb')
+
+  # Allow the server time to boot
+  sleep 2
+
+  begin
+    # Run the benchmarking script
+    system('ruby ./benchmark/run_benchmark.rb')
+  ensure
+    # Kill the server process and clean up
+    Process.kill('KILL', server_process)
+    Process.wait(server_process)
+  end
+end

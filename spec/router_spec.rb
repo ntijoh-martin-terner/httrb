@@ -2,12 +2,13 @@
 
 require_relative 'spec_helper'
 require_relative '../lib/http_server'
+require_relative '../lib/router'
 require 'net/http'
 require 'uri' # Add this to use the URI class
 
 describe 'serve' do # rubocop:disable Metrics/BlockLength
   before do
-    @server = Httrb::HTTPServer.new
+    @server = Httrb::HTTPServer.new(Httrb::Router)
   end
 
   after do

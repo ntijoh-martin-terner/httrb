@@ -13,4 +13,4 @@ Httrb.post('/login') do
   Httrb::Response.json({ :name => 'Konata Izumi', params: params })
 end
 
-Httrb.start
+Httrb.start_blocking

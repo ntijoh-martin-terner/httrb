@@ -26,4 +26,4 @@ Httrb.any('/help/') do |_params|
   Httrb::Response.from_file('absolute_path')
 end
 
-Httrb.start
+Httrb.start_blocking

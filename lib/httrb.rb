@@ -22,7 +22,7 @@ require_relative './request'
 #   end
 #
 module Httrb
-  @server = HTTPServer.new
+  @server = HTTPServer.new(Router)
   @before_route_filter = nil
   @before_filter = nil
   @after_filter = nil
@@ -33,7 +33,7 @@ module Httrb
   # @private
   #
   class RequestContext
-    attr_accessor :request, :response, :variables, :params
+    attr_reader :request, :response, :variables, :params
 
     def initialize(request, response, variables)
       @request = request
@@ -232,26 +232,41 @@ module Httrb
     @server.clear_routes
   end
 
+  #
+  # Gets the public route relative to the httrb caller file
+  # @private
+  #
+  def self.public_route
+    current_file_dir = File.expand_path(File.dirname(caller_locations.last.path))
+
+    File.expand_path('./public/', current_file_dir)
+  end
 
   #
   # Starts the server
   #
-  # @param [<Type>] port The port of the server
-  # @param [<Type>] blocking Whether or not the server should block the main thread
+  # @param [Integer] port The port of the server
   #
-  def self.start(port = 4567, blocking = true)
+  def self.start(port = 4567)
     @server.intercept_response = method(:intercept_response)
     @server.intercept_request = method(:intercept_request)
 
-    current_file_dir = File.expand_path(File.dirname(caller_locations.first.path))
+    absolute_public_route = public_route
 
-    absolute_base_path = File.expand_path('./public/', current_file_dir)
-
-    @server.router.add_directory_route('/', 'GET', [absolute_base_path]) if File.directory?(absolute_base_path)
+    @server.router.add_directory_route('/', 'GET', [absolute_public_route]) if File.directory?(absolute_public_route)
 
     @server.start(port)
+  end
 
-    sleep if blocking
+  #
+  # Starts the server and blocks the main thread indefinitely
+  #
+  # @param [Integer] port The port of the server
+  #
+  def self.start_blocking(port = 4567)
+    start(port)
+
+    sleep
   end
 
   #

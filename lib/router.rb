@@ -14,8 +14,17 @@ module Httrb
     #
     # Initializes Router
     #
-    def initialize
+    def initialize(routing_tree)
       @routes = Hash.new { |hash, key| hash[key] = {} }
+      @routing_tree = routing_tree.new
+    end
+
+    #
+    # Clears all routes
+    #
+    def clear_routes
+      @routes = Hash.new { |hash, key| hash[key] = {} }
+      @routing_tree.clear
     end
 
     #
@@ -47,7 +56,11 @@ module Httrb
 
       raise StandardError, 'File router cannot serve directory' if File.directory?(absolute_base_path)
 
-      @routes[path_alias][method] = { type: :file, file_path: absolute_base_path, action: nil }
+      route_data = { type: :file, file_path: absolute_base_path, action: nil }
+
+      @routes[path_alias][method] = route_data
+
+      @routing_tree.insert(path_alias, method, route_data)
     end
 
     #
@@ -79,6 +92,18 @@ module Httrb
       raise StandardError, 'Route alias already exists' if path_alias_route && path_alias_route[method]
 
       path_alias_route[method] = { type: :directory, patterns:, action: nil }
+
+      patterns.each do |base_path, expanded_paths|
+        expanded_paths.each do |expanded_path|
+          relative_path = expanded_path.split(base_path, 2)[1]
+
+          absolute_path_alias = File.join(path_alias, relative_path)
+
+          route_data = { type: :directory, pattern: expanded_path, action: nil }
+
+          @routing_tree.insert(absolute_path_alias, method, route_data)
+        end
+      end
     end
 
     #
@@ -100,7 +125,11 @@ module Httrb
       path_alias_route = @routes[path_alias]
       raise StandardError, 'Route alias already exists' if path_alias_route && path_alias_route[method]
 
-      @routes[path_alias][method] = { type: :route, action: }
+      route_data = { type: :route, action: }
+
+      @routes[path_alias][method] = route_data
+
+      @routing_tree.insert(path_alias, method, route_data)
     end
 
     #
@@ -116,25 +145,20 @@ module Httrb
       request_path = request.path
       request_method = request.method
 
-      @routes.each do |route_path, methods|
-        route = methods[request_method]
+      route_data = @routing_tree.find(request_path, request_method)
 
-        next unless route
+      return nil unless route_data
 
-        case route[:type]
-        when :directory
-          patterns = route[:patterns]
+      route = route_data[:route]
+      route_variables = route_data[:variables]
 
-          pattern = get_matching_pattern(patterns, route_path, request_path)
+      case route[:type]
+      when :directory
+        pattern = route[:pattern]
 
-          return { route: route, pattern: pattern, type: :dynamic } if pattern
-        when :file, :route
-          variables = get_request_variables(route_path, request_path)
-
-          return { route: route, variables: variables, type: :static } if variables
-        else
-          next
-        end
+        return { route: route, pattern: pattern, type: :dynamic }
+      when :file, :route
+        return { route: route, variables: route_variables, type: :static }
       end
 
       nil

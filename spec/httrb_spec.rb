@@ -29,7 +29,7 @@ describe 'Httrb Framework' do # rubocop:disable Metrics/BlockLength
     end
 
     # Start the server
-    Httrb.start(4567, false)
+    Httrb.start(4567)
     # sleep(0.5) # Allow the server to start
   end
 
