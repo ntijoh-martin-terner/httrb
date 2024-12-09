@@ -2,6 +2,7 @@
 
 require 'mime/types'
 require 'json'
+require 'erb'
 
 module Httrb
   #
@@ -80,6 +81,22 @@ module Httrb
       rescue Errno::ENOENT
         Response.not_found
       end
+    end
+
+    #
+    # Returns an erb response from erb path
+    #
+    # @param [String] file_path The file path to the erb file
+    #
+    # @return [Response] The created response
+    #
+    def self.erb(file_path, caller_binding)
+      file = File.open(file_path)
+      file_contents = file.read
+
+      rhtml = ERB.new(file_contents).result(caller_binding)
+
+      Httrb::Response.new(200, { 'Content-Type' => 'text/html' }, rhtml)
     end
 
     #
